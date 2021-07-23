@@ -1,0 +1,100 @@
+{
+	"name": "TestDWUByNewYorkTaxi3",
+	"properties": {
+		"activities": [
+			{
+				"name": "SelectInto1",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlDWSource",
+						"sqlReaderQuery": {
+							"value": "SELECT N'処理開始時間：' + convert(varchar, dateadd(hour, 9, SYSDATETIME()), 120)\n\nDECLARE @STARTDATETIME datetime2 = SYSDATETIME()\nDECLARE @DEALTIME_1 float\n\nIF OBJECT_ID(N'dbo.YellowTaxi_Test1', N'U') IS NOT NULL DROP TABLE  [dbo].[YellowTaxi_Test1]\nSELECT TOP 10000 * INTO [dbo].[YellowTaxi_Test1] FROM [dbo].[YellowTaxi]\nOPTION(MAXDOP 1)\n\nset @DEALTIME_1 = (SELECT DATEDIFF(MILLISECOND, @STARTDATETIME, SYSDATETIME()) AS PROCESSING_TIME_MS);\n\nSELECT N'処理①：' + Format(@DEALTIME_1, '#,###') + N'ms'\n        + N'（' + Format(@DEALTIME_1/1000, '#,###.###') + N's）'",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "AzureSynapseAnalytics_DataSet_Query",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "SelectInto2",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlDWSource",
+						"sqlReaderQuery": {
+							"value": "SELECT N'処理開始時間：' + convert(varchar, dateadd(hour, 9, SYSDATETIME()), 120)\n\nDECLARE @STARTDATETIME datetime2 = SYSDATETIME()\nDECLARE @DEALTIME_1 float\n\nIF OBJECT_ID(N'dbo.YellowTaxi_Test2', N'U') IS NOT NULL DROP TABLE  [dbo].[YellowTaxi_Test2]\nSELECT TOP 10000 * INTO [dbo].[YellowTaxi_Test2] FROM [dbo].[YellowTaxi]\nOPTION(MAXDOP 1)\n\nset @DEALTIME_1 = (SELECT DATEDIFF(MILLISECOND, @STARTDATETIME, SYSDATETIME()) AS PROCESSING_TIME_MS);\n\nSELECT N'処理①：' + Format(@DEALTIME_1, '#,###') + N'ms'\n        + N'（' + Format(@DEALTIME_1/1000, '#,###.###') + N's）'",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "AzureSynapseAnalytics_DataSet_Query",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "SelectInto3",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlDWSource",
+						"sqlReaderQuery": {
+							"value": "SELECT N'処理開始時間：' + convert(varchar, dateadd(hour, 9, SYSDATETIME()), 120)\n\nDECLARE @STARTDATETIME datetime2 = SYSDATETIME()\nDECLARE @DEALTIME_1 float\n\nIF OBJECT_ID(N'dbo.YellowTaxi_Test3', N'U') IS NOT NULL DROP TABLE  [dbo].[YellowTaxi_Test3]\nSELECT TOP 10000 * INTO [dbo].[YellowTaxi_Test3] FROM [dbo].[YellowTaxi]\nOPTION(MAXDOP 1)\n\nset @DEALTIME_1 = (SELECT DATEDIFF(MILLISECOND, @STARTDATETIME, SYSDATETIME()) AS PROCESSING_TIME_MS);\n\nSELECT N'処理①：' + Format(@DEALTIME_1, '#,###') + N'ms'\n        + N'（' + Format(@DEALTIME_1/1000, '#,###.###') + N's）'",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "AzureSynapseAnalytics_DataSet_Query",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			}
+		],
+		"folder": {
+			"name": "TestDWUByNewYorkTaxi"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-05-19T07:16:41Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

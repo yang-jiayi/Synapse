@@ -1,0 +1,22 @@
+{
+	"name": "HTTP_Movie_DataSet",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LinkedService_HTTP_Movie",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

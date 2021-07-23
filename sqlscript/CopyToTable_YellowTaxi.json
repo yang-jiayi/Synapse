@@ -1,0 +1,17 @@
+{
+	"name": "CopyToTable_YellowTaxi",
+	"properties": {
+		"content": {
+			"query": "IF NOT EXISTS (SELECT * FROM sys.objects O JOIN sys.schemas S ON O.schema_id = S.schema_id WHERE O.NAME = 'YellowTaxi' AND O.TYPE = 'U' AND S.NAME = 'dbo')\nCREATE TABLE dbo.YellowTaxi\n\t(\n\t [VendorID] nvarchar(4000),\n\t [tpep_pickup_datetime] nvarchar(4000),\n\t [tpep_dropoff_datetime] nvarchar(4000),\n\t [passenger_count] nvarchar(4000),\n\t [trip_distance] nvarchar(4000),\n\t [RatecodeID] nvarchar(4000),\n\t [store_and_fwd_flag] nvarchar(4000),\n\t [PULocationID] nvarchar(4000),\n\t [DOLocationID] nvarchar(4000),\n\t [payment_type] nvarchar(4000),\n\t [fare_amount] nvarchar(4000),\n\t [extra] nvarchar(4000),\n\t [mta_tax] nvarchar(4000),\n\t [tip_amount] nvarchar(4000),\n\t [tolls_amount] nvarchar(4000),\n\t [improvement_surcharge] nvarchar(4000),\n\t [total_amount] nvarchar(4000),\n\t [congestion_surcharge] nvarchar(4000)\n\t)\nWITH\n\t(\n\tDISTRIBUTION = ROUND_ROBIN,\n\t CLUSTERED COLUMNSTORE INDEX\n\t -- HEAP\n\t)\nGO\n\n--Uncomment the 4 lines below to create a stored procedure for data pipeline orchestration​\n--CREATE PROC bulk_load_YellowTaxi\n--AS\n--BEGIN\nCOPY INTO dbo.YellowTaxi\n(VendorID 1, tpep_pickup_datetime 2, tpep_dropoff_datetime 3, passenger_count 4, trip_distance 5, \nRatecodeID 6, store_and_fwd_flag 7, PULocationID 8, DOLocationID 9, payment_type 10, fare_amount 11, \nextra 12, mta_tax 13, tip_amount 14, tolls_amount 15, improvement_surcharge 16, total_amount 17, congestion_surcharge 18)\nFROM 'https://jssugsynapseadlsv2.dfs.core.windows.net/rawdata/NewYorkTaxi/yellow_tripdata_2020-01.csv'\nWITH\n(\n\tFILE_TYPE = 'CSV'\n\t,MAXERRORS = 0\n\t,ERRORFILE = 'https://jssugsynapseadlsv2.dfs.core.windows.net/rawdata/'\n\t,IDENTITY_INSERT = 'OFF'\n)\n--END\nGO\n\nSELECT TOP 100 * FROM dbo.YellowTaxi\nGO\n\nSELECT COUNT(*) FROM dbo.YellowTaxi\nGO\n\n\nSELECT TOP 10000 * INTO [dbo].[YellowTaxi_Test1] FROM [dbo].[YellowTaxi]\nGO\n\n\nSELECT COUNT(*) FROM [dbo].[YellowTaxi_Test1]\nGO\n\nDROP TABLE [dbo].[YellowTaxi_Test1]\nGO\n\n\n--\nPrint N'処理開始時間：' + convert(varchar, dateadd(hour, 9, SYSDATETIME()), 120)\n\nDECLARE @STARTDATETIME datetime2 = SYSDATETIME()\nDECLARE @DEALTIME_1 float\n\nIF OBJECT_ID(N'dbo.YellowTaxi_Test1', N'U') IS NOT NULL   \nDROP TABLE  [dbo].[YellowTaxi_Test1];\n\nSELECT TOP 10000 * INTO [dbo].[YellowTaxi_Test1] FROM [dbo].[YellowTaxi];\n\nset @DEALTIME_1 = (SELECT DATEDIFF(MILLISECOND, @STARTDATETIME, SYSDATETIME()) AS PROCESSING_TIME_MS);\n\nPrint N'処理①：' + Format(@DEALTIME_1, '#,###') + N'ms'\n        + N'（' + Format(@DEALTIME_1/1000, '#,###.###') + N's）';\nGo",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "jssugsqlpool",
+				"databaseName": "jssugsqlpool"
+			},
+			"resultLimit": -1
+		},
+		"type": "SqlQuery"
+	}
+}

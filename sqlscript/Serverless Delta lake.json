@@ -1,0 +1,17 @@
+{
+	"name": "Serverless Delta lake",
+	"properties": {
+		"content": {
+			"query": "--use openrowset\nselect top 10 *\nfrom openrowset(\n    bulk 'https://sqlondemandstorage.blob.core.windows.net/delta-lake/covid/',\n    format = 'delta') as rows\n\n--drop datasource\ndrop external data source DeltaLakeStorage\n\n--create datasource\ncreate external data source DeltaLakeStorage\nwith ( location = 'https://sqlondemandstorage.blob.core.windows.net/delta-lake/' );\ngo\n\nselect top 10 *\nfrom openrowset(\n        bulk 'covid',\n        data_source = 'DeltaLakeStorage',\n        format = 'delta'\n    ) as rows\n\n--select column\nselect top 10 *\nfrom openrowset(\n        bulk 'covid',\n        data_source = 'DeltaLakeStorage',\n        format = 'delta'\n    )\n    with ( date_rep date,\n           cases int,\n           geo_id varchar(6)\n           ) as rows\n\n--confim data\nselect top 10 *\nFROM  \n    OPENROWSET(\n        BULK 'yellow',\n        DATA_SOURCE = 'DeltaLakeStorage',\n        FORMAT='DELTA'\n    ) as rows\n\n--use data set\nSELECT\n        YEAR(pickup_datetime) AS year,\n        passenger_count,\n        COUNT(*) AS cnt\nFROM  \n    OPENROWSET(\n        BULK 'yellow',\n        DATA_SOURCE = 'DeltaLakeStorage',\n        FORMAT='DELTA'\n    ) nyc\nWHERE\n    nyc.year = 2017\n    AND nyc.month IN (1, 2, 3)\n    AND pickup_datetime BETWEEN CAST('1/1/2017' AS datetime) AND CAST('3/31/2017' AS datetime)\nGROUP BY\n    passenger_count,\n    YEAR(pickup_datetime)\nORDER BY\n    YEAR(pickup_datetime),\n    passenger_count;",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "Built-in",
+				"databaseName": "jssugserverless"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
